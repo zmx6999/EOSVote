@@ -3,16 +3,16 @@ package youvote
 import "github.com/eoscanada/eos-go"
 
 type StatusData struct {
-	PollName string `json:"poll_name"`
+	PollId uint64 `json:"poll_id"`
 }
 
-func NewStatus(pollName string) *eos.Action {
+func NewStatus(pollId uint64) *eos.Action {
 	return NewAction("status", CONTRACT_NAME, StatusData{
-		PollName:pollName,
+		PollId:pollId,
 	})
 }
 
-func Status(pollName string, privateKey string) (signedTx *eos.SignedTransaction, r *eos.PushTransactionFullResp, err error) {
-	signedTx, r, err = PushAction(NewStatus(pollName), privateKey)
+func Status(pollId uint64, privateKey string) (signedTx *eos.SignedTransaction, r *eos.PushTransactionFullResp, err error) {
+	signedTx, r, err = PushAction(NewStatus(pollId), privateKey)
 	return
 }

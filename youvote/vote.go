@@ -3,20 +3,18 @@ package youvote
 import "github.com/eoscanada/eos-go"
 
 type VoteData struct {
-	PollName string `json:"poll_name"`
-	Option string `json:"option"`
+	PolloptId uint64 `json:"pollopt_id"`
 	Account eos.AccountName `json:"account"`
 }
 
-func NewVote(pollName string, option string, account string) *eos.Action {
+func NewVote(polloptId uint64, account string) *eos.Action {
 	return NewAction("vote", account, VoteData{
-		PollName:pollName,
-		Option:option,
+		PolloptId:polloptId,
 		Account:eos.AN(account),
 	})
 }
 
-func Vote(pollName string, option string, account string, privateKey string) (signedTx *eos.SignedTransaction, r *eos.PushTransactionFullResp, err error) {
-	signedTx, r, err = PushAction(NewVote(pollName, option, account), privateKey)
+func Vote(polloptId uint64, account string, privateKey string) (signedTx *eos.SignedTransaction, r *eos.PushTransactionFullResp, err error) {
+	signedTx, r, err = PushAction(NewVote(polloptId, account), privateKey)
 	return
 }

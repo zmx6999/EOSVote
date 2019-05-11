@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"190510/youvote"
+	"190511/youvote"
 	"encoding/hex"
 )
 
@@ -34,11 +34,12 @@ func (this *YouVoteController) AddPoll()  {
 
 func (this *YouVoteController) AddPollOpt()  {
 	data := this.getPost()
-	pollName, ok := data["poll_name"].(string)
-	if !ok {
+	_pollId, ok := data["poll_id"].(float64)
+	if !ok || _pollId < 0 {
 		this.error(1012, "Invalid Request")
 		return
 	}
+	pollId := uint64(_pollId)
 
 	option, ok := data["option"].(string)
 	if !ok {
@@ -52,7 +53,7 @@ func (this *YouVoteController) AddPollOpt()  {
 		return
 	}
 
-	_, r, err := youvote.AddPollOpt(pollName, option, privateKey)
+	_, r, err := youvote.AddPollOpt(pollId, option, privateKey)
 	if err != nil {
 		this.error(1012, err.Error())
 		return
@@ -63,17 +64,12 @@ func (this *YouVoteController) AddPollOpt()  {
 
 func (this *YouVoteController) Vote()  {
 	data := this.getPost()
-	pollName, ok := data["poll_name"].(string)
-	if !ok {
+	_polloptId, ok := data["pollopt_id"].(float64)
+	if !ok || _polloptId < 0 {
 		this.error(1012, "Invalid Request")
 		return
 	}
-
-	option, ok := data["option"].(string)
-	if !ok {
-		this.error(1012, "Invalid Request")
-		return
-	}
+	polloptId := uint64(_polloptId)
 
 	account, ok := data["account"].(string)
 	if !ok {
@@ -87,7 +83,7 @@ func (this *YouVoteController) Vote()  {
 		return
 	}
 
-	_, r, err := youvote.Vote(pollName, option, account, privateKey)
+	_, r, err := youvote.Vote(polloptId, account, privateKey)
 	if err != nil {
 		this.error(1012, err.Error())
 		return
@@ -98,11 +94,12 @@ func (this *YouVoteController) Vote()  {
 
 func (this *YouVoteController) RmPoll()  {
 	data := this.getPost()
-	pollName, ok := data["poll_name"].(string)
-	if !ok {
+	_pollId, ok := data["poll_id"].(float64)
+	if !ok || _pollId < 0 {
 		this.error(1012, "Invalid Request")
 		return
 	}
+	pollId := uint64(_pollId)
 
 	privateKey, ok := data["private_key"].(string)
 	if !ok {
@@ -110,7 +107,7 @@ func (this *YouVoteController) RmPoll()  {
 		return
 	}
 
-	_, r, err := youvote.RmPoll(pollName, privateKey)
+	_, r, err := youvote.RmPoll(pollId, privateKey)
 	if err != nil {
 		this.error(1012, err.Error())
 		return
@@ -121,17 +118,12 @@ func (this *YouVoteController) RmPoll()  {
 
 func (this *YouVoteController) RmPollOpt()  {
 	data := this.getPost()
-	pollName, ok := data["poll_name"].(string)
-	if !ok {
+	_polloptId, ok := data["pollopt_id"].(float64)
+	if !ok || _polloptId < 0 {
 		this.error(1012, "Invalid Request")
 		return
 	}
-
-	option, ok := data["option"].(string)
-	if !ok {
-		this.error(1012, "Invalid Request")
-		return
-	}
+	polloptId := uint64(_polloptId)
 
 	privateKey, ok := data["private_key"].(string)
 	if !ok {
@@ -139,7 +131,7 @@ func (this *YouVoteController) RmPollOpt()  {
 		return
 	}
 
-	_, r, err := youvote.RmPollOpt(pollName, option, privateKey)
+	_, r, err := youvote.RmPollOpt(polloptId, privateKey)
 	if err != nil {
 		this.error(1012, err.Error())
 		return
@@ -150,11 +142,12 @@ func (this *YouVoteController) RmPollOpt()  {
 
 func (this *YouVoteController) Status()  {
 	data := this.getPost()
-	pollName, ok := data["poll_name"].(string)
-	if !ok {
+	_pollId, ok := data["poll_id"].(float64)
+	if !ok || _pollId < 0 {
 		this.error(1012, "Invalid Request")
 		return
 	}
+	pollId := uint64(_pollId)
 
 	privateKey, ok := data["private_key"].(string)
 	if !ok {
@@ -162,7 +155,7 @@ func (this *YouVoteController) Status()  {
 		return
 	}
 
-	_, r, err := youvote.Status(pollName, privateKey)
+	_, r, err := youvote.Status(pollId, privateKey)
 	if err != nil {
 		this.error(1012, err.Error())
 		return
@@ -171,13 +164,14 @@ func (this *YouVoteController) Status()  {
 	this.success(map[string]interface{}{"transaction_id": hex.EncodeToString(r.Processed.ID)})
 }
 
-func (this *YouVoteController) StatusReset()  {
+func (this *YouVoteController) Reset()  {
 	data := this.getPost()
-	pollName, ok := data["poll_name"].(string)
-	if !ok {
+	_pollId, ok := data["poll_id"].(float64)
+	if !ok || _pollId < 0 {
 		this.error(1012, "Invalid Request")
 		return
 	}
+	pollId := uint64(_pollId)
 
 	privateKey, ok := data["private_key"].(string)
 	if !ok {
@@ -185,7 +179,7 @@ func (this *YouVoteController) StatusReset()  {
 		return
 	}
 
-	_, r, err := youvote.StatusReset(pollName, privateKey)
+	_, r, err := youvote.Reset(pollId, privateKey)
 	if err != nil {
 		this.error(1012, err.Error())
 		return

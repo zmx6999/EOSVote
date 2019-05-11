@@ -3,18 +3,16 @@ package youvote
 import "github.com/eoscanada/eos-go"
 
 type RmPollOptData struct {
-	PollName string `json:"poll_name"`
-	Option string `json:"option"`
+	PolloptId uint64 `json:"pollopt_id"`
 }
 
-func NewRmPollOpt(pollName string, option string) *eos.Action {
+func NewRmPollOpt(polloptId uint64) *eos.Action {
 	return NewAction("rmpollopt", CONTRACT_NAME, RmPollOptData{
-		PollName:pollName,
-		Option:option,
+		PolloptId:polloptId,
 	})
 }
 
-func RmPollOpt(pollName string, option string, privateKey string) (signedTx *eos.SignedTransaction, r *eos.PushTransactionFullResp, err error) {
-	signedTx, r, err = PushAction(NewRmPollOpt(pollName, option), privateKey)
+func RmPollOpt(polloptId uint64, privateKey string) (signedTx *eos.SignedTransaction, r *eos.PushTransactionFullResp, err error) {
+	signedTx, r, err = PushAction(NewRmPollOpt(polloptId), privateKey)
 	return
 }
